@@ -32,6 +32,7 @@ let addBookmarkFromUrl = co.wrap(function*() {
 	}
 	yield db.insertBookmark(createdBookmark);
 	alert(createdBookmark.url + ' has been registered.');
+	document.getElementById("bookmarkUrlInput").value = null;
 	updateBookmarkList();
 });
 
