@@ -69,7 +69,7 @@ let loadUrlList = co.wrap(function*() {
 			}
 		}
 
-		let createdBookmark = yield scrape.createdBookmark(bookmarkUrl);
+		let createdBookmark = yield scrape.createBookmark(bookmarkUrl);
 		if(createdBookmark.deleted === true) {
 			alert(createdBookmark.url + "is deleted.");
 		}
