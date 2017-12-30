@@ -4,6 +4,8 @@ A simple native app to manage bookmarks with thumbnail images.
 
 Built with Node.js ([Electron](https://electronjs.org/)) and [nedb](https://github.com/louischatriot/nedb).
 
+![screenshot](assets/screenshot.png)
+
 ## Run 
 
 ```
