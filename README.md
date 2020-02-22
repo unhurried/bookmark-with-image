@@ -2,7 +2,7 @@
 
 A simple native app to manage bookmarks with thumbnail images.
 
-<img src="assets/screenshot.png" alt="screenshot" style="zoom:50%;" />
+<img src="assets/screenshot.png" alt="screenshot" width="400" />
 
 ## Libraries
 
