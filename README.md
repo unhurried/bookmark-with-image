@@ -2,31 +2,47 @@
 
 A simple native app to manage bookmarks with thumbnail images.
 
-Built with Node.js ([Electron](https://electronjs.org/)) and [nedb](https://github.com/louischatriot/nedb).
+<img src="assets/screenshot.png" alt="screenshot" style="zoom:50%;" />
 
-![screenshot](assets/screenshot.png)
+## Libraries
 
-## Run 
+* [v2.x](https://github.com/unhurried/bookmark-with-image/blob/v2.0.0/README.md)
+  * [Vue.js](https://jp.vuejs.org/index.html) (with Vue CLI4)
+  * [BootstrapVue](https://bootstrap-vue.js.org/)
+  * [Electron](https://www.electronjs.org/) (through [vue-cli-plugin-electron-builder](https://github.com/nklayman/vue-cli-plugin-electron-builder))
+  * [axios](https://github.com/axios/axios)
+  * [cheerio-httpcli ](https://www.npmjs.com/package/cheerio-httpcli)
+  * [SQLite3](https://www.sqlite.org/index.html) (through [typeorm](https://typeorm.io/))
+* [v1.x](https://github.com/unhurried/bookmark-with-image/blob/v1.0.0/README.md)
+  * [Electron](https://electronjs.org/)
+  * [request-promise](https://www.npmjs.com/package/request-promise)
+  * [cheerio-httpcli](https://www.npmjs.com/package/cheerio-httpcli)
+  * [nedb](https://github.com/louischatriot/nedb)
 
-```
-# Install electron if you haven't installed it yet.
-npm install -g electron
+## How to start development
 
+### Install dependencies
+
+```shell
 npm install
-electron .
+# To build sqlite3 for electron on Windows.
+npm install -g node-gyp
+npm install -g --production windows-build-tools
+npm install sqlite3 --build-from-source --save --runtime=electron --target=6.1.7 --dist-url=https://atom.io/download/electron
 ```
 
-## Build
-
+### Run the application
 ```
-# Install electron-packager if you haven't installed it yet.
-npm install -g electron-packager
-
-npm install
-electron-packager . bookmark-with-image ––platform=win32 ––arch=x64 --electron-version=1.7.9
+npm run electron:serve
 ```
 
+### Build for production
+```
+npm run electron:generate-icons
+npm run electron:build
+```
 
-
-
-
+### Lint and fix files
+```
+npm run lint
+```
