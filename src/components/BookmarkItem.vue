@@ -5,8 +5,14 @@
         <img v-if="item.thumbnailData" @click="openItem" :src="`data:image/${item.thumbnailExt};base64,${item.thumbnailData}`" />
         <img v-else @click="openItem" src="/assets/no_image.png" />
       </div>
-      <div class="deleteIcon">
-        <img @click="deleteItem" src="/assets/delete_icon.svg" width="24" />
+      <div class="deleteIcon" @click="deleteItem">
+        <font-awesome-icon icon="minus-circle" />
+      </div>
+      <div class="moveLeftIcon">
+        <font-awesome-icon icon="arrow-alt-circle-left" />
+      </div>
+      <div class="moveRightIcon">
+        <font-awesome-icon icon="arrow-alt-circle-right" />
       </div>
     </div>
     <b-tooltip v-if="item.title" :target="item.url" triggers="hover">
@@ -60,8 +66,26 @@ div.bookmarkThumbnail img {
 }
 div.deleteIcon {
   position: absolute;
-  top: 24px;
-  left: 196px;
+  top: 20px;
+  left: 192px;
   cursor: pointer;
+  font-size: 18pt;
+  color: white;
+}
+div.moveLeftIcon {
+  position: absolute;
+  top: 134px;
+  left: 32px;
+  cursor: pointer;
+  font-size: 18pt;
+  color: white;
+}
+div.moveRightIcon {
+  position: absolute;
+  top: 134px;
+  left: 192px;
+  cursor: pointer;
+  font-size: 18pt;
+  color: white;
 }
 </style>

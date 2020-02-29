@@ -6,13 +6,13 @@ import store from './store'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { faCog } from '@fortawesome/free-solid-svg-icons';
+import { faCog, faArrowAltCircleLeft, faArrowAltCircleRight, faMinusCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 
 Vue.config.productionTip = false
 Vue.use(BootstrapVue);
 
-library.add(faCog);
+library.add(faCog, faArrowAltCircleLeft, faArrowAltCircleRight, faMinusCircle);
 Vue.component('font-awesome-icon', FontAwesomeIcon);
 
 new Vue({
