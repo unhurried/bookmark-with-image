@@ -1,11 +1,15 @@
-import { Column } from 'typeorm';
+import { Column, Index, PrimaryColumn } from 'typeorm';
 import { ExtendedEntity } from '@/repository/ExtendedEntity';
 import { BaseEntity } from './BaseEntity';
 
 @ExtendedEntity('bookmark')
 export class BookmarkEntity extends BaseEntity {
-  @Column({ type: 'text', name: 'bookmarkUrl' })
+  @PrimaryColumn({ type: 'text', name: 'url' })
   url!: string;
+
+  @Index()
+  @Column({ type: 'integer', name: 'order' })
+  order: number = 0;
 
   @Column({ type: 'text', name: 'title', nullable: true })
   title!: string;

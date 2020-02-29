@@ -1,15 +1,21 @@
 <template>
   <div class="bookmarkItemWrapper">
     <div class="bookmarkItem">
-      <div class="bookmarkThumbnail" :id="item.id">
+      <div class="bookmarkThumbnail" :id="item.url">
         <img v-if="item.thumbnailData" @click="openItem" :src="`data:image/${item.thumbnailExt};base64,${item.thumbnailData}`" />
         <img v-else @click="openItem" src="/assets/no_image.png" />
       </div>
-      <div class="deleteIcon">
-        <img @click="deleteItem" src="/assets/delete_icon.svg" width="24" />
+      <div class="deleteIcon" @click="deleteItem">
+        <font-awesome-icon icon="minus-circle" />
+      </div>
+      <div class="moveLeftIcon" @click="moveLeft">
+        <font-awesome-icon icon="arrow-alt-circle-left" />
+      </div>
+      <div class="moveRightIcon" @click="moveRight">
+        <font-awesome-icon icon="arrow-alt-circle-right" />
       </div>
     </div>
-    <b-tooltip v-if="item.title" :target="item.id" triggers="hover">
+    <b-tooltip v-if="item.title" :target="item.url" triggers="hover">
       {{item.title}}
     </b-tooltip>
   </div>
@@ -31,9 +37,28 @@ export default class BookmarkItem extends Vue {
   private async openItem() {
     BrowserUtil.openUrl(this.item.url);
   }
+
   private async deleteItem() {
     const repository = await RepositoryUtil.getRepository(BookmarkEntity);
-    repository.delete(this.item.id);
+    repository.delete(this.item.url);
+    this.$emit("update");
+  }
+
+  private async moveLeft() {
+    this.move('left');
+  }
+  private async moveRight() {
+    this.move('right');
+  }
+  private async move(direction: 'left' | 'right') {
+    const dstOrder = direction === 'left'? this.item.order - 1 : this.item.order + 1;
+    const repository = await RepositoryUtil.getRepository(BookmarkEntity);
+    const src = await repository.findOne(this.item.url);
+    const dst = await repository.findOne({ order: dstOrder });
+    if (!src || !dst) { return; }
+    src.order = dst.order;
+    dst.order = this.item.order;
+    await Promise.all([ repository.save(src), repository.save(dst) ]);
     this.$emit("update");
   }
 }
@@ -60,8 +85,26 @@ div.bookmarkThumbnail img {
 }
 div.deleteIcon {
   position: absolute;
-  top: 24px;
-  left: 196px;
+  top: 20px;
+  left: 192px;
   cursor: pointer;
+  font-size: 18pt;
+  color: white;
+}
+div.moveLeftIcon {
+  position: absolute;
+  top: 134px;
+  left: 32px;
+  cursor: pointer;
+  font-size: 18pt;
+  color: white;
+}
+div.moveRightIcon {
+  position: absolute;
+  top: 134px;
+  left: 192px;
+  cursor: pointer;
+  font-size: 18pt;
+  color: white;
 }
 </style>

@@ -11,15 +11,10 @@ export class FallbackStrategy implements ScrapingStrategy {
   public accept(bookmarkUrl: string) {
     return true;
   }
-
-  getBookmarkId(bookmarkUrl: string) {
-    return normalizeUrl(bookmarkUrl);
-  }
-  
+ 
   async createBookmark(bookmarkUrl: string) {
     const b = new BookmarkEntity();
-    b.url = bookmarkUrl;
-    b.id = this.getBookmarkId(b.url);
+    b.url = normalizeUrl(bookmarkUrl);
     const content = await client.fetch(bookmarkUrl);
     b.thumbnailUrl = content.$('meta[property="og:image"]').attr('content');
     b.title = content.$('meta[property="og:title"]').attr('content');

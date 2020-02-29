@@ -2,6 +2,7 @@ import { ExampleStrategy } from '@/scraping/strategy/ExampleStrategy';
 import { FallbackStrategy } from '@/scraping/strategy/FallbackStrategy';
 import { ScrapingStrategy } from '@/scraping/strategy/ScrapingStrategy';
 import { BookmarkEntity } from '@/repository/BookmarkEntity';
+import { RepositoryUtil } from '@/repository/RepositoryUtil';
 
 export class ScrapeFacade {
   private static strategies: ScrapingStrategy[] = [ new ExampleStrategy() ];
@@ -13,13 +14,17 @@ export class ScrapeFacade {
     return new FallbackStrategy();
   }
 
-  static getBookmarkId(url: string) {
+  static async createBookmark(url: string): Promise<BookmarkEntity> {
     const strategy = this.findStategy(url);
-    if(strategy) return strategy.getBookmarkId(url);
+    if(!strategy) { throw new Error('No scraping strategy found.'); }
+    const bookmark = await strategy.createBookmark(url);
+    bookmark.order = await this.getNewOrder();
+    return bookmark;
   }
 
-  static async createBookmark(url: string): Promise<BookmarkEntity | undefined> {
-    const strategy = this.findStategy(url);
-    if(strategy) return strategy.createBookmark(url);
+  private static async getNewOrder(): Promise<number> {
+    const repository = await RepositoryUtil.getRepository(BookmarkEntity);
+    const result = await repository.createQueryBuilder().select('MAX(`order`) as maxOrder').getRawOne();
+    return result.maxOrder as number + 1;
   }
 }
