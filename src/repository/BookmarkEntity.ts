@@ -7,7 +7,7 @@ export class BookmarkEntity extends BaseEntity {
   @PrimaryColumn({ type: 'text', name: 'url' })
   url!: string;
 
-  @Index({ unique: true })
+  @Index()
   @Column({ type: 'integer', name: 'order' })
   order: number = 0;
 

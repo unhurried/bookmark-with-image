@@ -8,10 +8,10 @@
       <div class="deleteIcon" @click="deleteItem">
         <font-awesome-icon icon="minus-circle" />
       </div>
-      <div class="moveLeftIcon">
+      <div class="moveLeftIcon" @click="moveLeft">
         <font-awesome-icon icon="arrow-alt-circle-left" />
       </div>
-      <div class="moveRightIcon">
+      <div class="moveRightIcon" @click="moveRight">
         <font-awesome-icon icon="arrow-alt-circle-right" />
       </div>
     </div>
@@ -37,9 +37,28 @@ export default class BookmarkItem extends Vue {
   private async openItem() {
     BrowserUtil.openUrl(this.item.url);
   }
+
   private async deleteItem() {
     const repository = await RepositoryUtil.getRepository(BookmarkEntity);
     repository.delete(this.item.url);
+    this.$emit("update");
+  }
+
+  private async moveLeft() {
+    this.move('left');
+  }
+  private async moveRight() {
+    this.move('right');
+  }
+  private async move(direction: 'left' | 'right') {
+    const dstOrder = direction === 'left'? this.item.order - 1 : this.item.order + 1;
+    const repository = await RepositoryUtil.getRepository(BookmarkEntity);
+    const src = await repository.findOne(this.item.url);
+    const dst = await repository.findOne({ order: dstOrder });
+    if (!src || !dst) { return; }
+    src.order = dst.order;
+    dst.order = this.item.order;
+    await Promise.all([ repository.save(src), repository.save(dst) ]);
     this.$emit("update");
   }
 }

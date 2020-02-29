@@ -29,6 +29,10 @@ export default class List extends Vue {
   private async update() {
     const repo = await RepositoryUtil.getRepository(BookmarkEntity);
     this.items = await repo.find({ order: { order: "ASC" }});
+    this.items.forEach((item, index) => {
+      item.order = index + 1;
+      repo.save(item);
+    });
   }
 }
 </script>
