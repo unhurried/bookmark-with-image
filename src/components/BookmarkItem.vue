@@ -1,7 +1,7 @@
 <template>
   <div class="bookmarkItemWrapper">
     <div class="bookmarkItem">
-      <div class="bookmarkThumbnail" :id="item.id">
+      <div class="bookmarkThumbnail" :id="item.url">
         <img v-if="item.thumbnailData" @click="openItem" :src="`data:image/${item.thumbnailExt};base64,${item.thumbnailData}`" />
         <img v-else @click="openItem" src="/assets/no_image.png" />
       </div>
@@ -9,7 +9,7 @@
         <img @click="deleteItem" src="/assets/delete_icon.svg" width="24" />
       </div>
     </div>
-    <b-tooltip v-if="item.title" :target="item.id" triggers="hover">
+    <b-tooltip v-if="item.title" :target="item.url" triggers="hover">
       {{item.title}}
     </b-tooltip>
   </div>
@@ -33,7 +33,7 @@ export default class BookmarkItem extends Vue {
   }
   private async deleteItem() {
     const repository = await RepositoryUtil.getRepository(BookmarkEntity);
-    repository.delete(this.item.id);
+    repository.delete(this.item.url);
     this.$emit("update");
   }
 }

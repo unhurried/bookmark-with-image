@@ -5,7 +5,7 @@
       <Form @update="update" />
     </div>
     <div class="bookmarkList">
-      <BookmarkItem v-for="item in items" :key="item.id" :item="item" @update="update" />
+      <BookmarkItem v-for="item in items" :key="item.url" :item="item" @update="update" />
     </div>
   </div>
 </template>
@@ -28,7 +28,7 @@ export default class List extends Vue {
   }
   private async update() {
     const repo = await RepositoryUtil.getRepository(BookmarkEntity);
-    this.items = await repo.find();
+    this.items = await repo.find({ order: { order: "ASC" }});
   }
 }
 </script>
