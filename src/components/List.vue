@@ -12,27 +12,26 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { RepositoryUtil } from '@/repository/RepositoryUtil';
 import { BookmarkEntity } from '@/repository/BookmarkEntity';
 import Form from '@/components/Form.vue';
 import BookmarkItem from '@/components/BookmarkItem.vue';
+import { remote } from 'electron';
+import { BookmarkService } from '@/remote/service/BookmarkService';
+import { RemoteServiceFactory } from '@/remote/RemoteServiceFactory';
 
 @Component({
   name: 'List',
   components: { Form, BookmarkItem }
 })
 export default class List extends Vue {
+  private bookmarkService = RemoteServiceFactory.getModule(BookmarkService);
   private items: BookmarkEntity[] = [];
+
   private async created() {
     this.update();
   }
   private async update() {
-    const repo = await RepositoryUtil.getRepository(BookmarkEntity);
-    this.items = await repo.find({ order: { order: "ASC" }});
-    this.items.forEach((item, index) => {
-      item.order = index + 1;
-      repo.save(item);
-    });
+    this.items = await this.bookmarkService.getList();
   }
 }
 </script>
