@@ -6,6 +6,13 @@ import {
   installVueDevtools
 } from 'vue-cli-plugin-electron-builder/lib'
 
+import { createConnection } from 'typeorm'
+import { BookmarkEntity } from './repository/BookmarkEntity'
+import { ConfigEntity } from './repository/ConfigEntity'
+
+import RemoteServiceManager from '@/remote/RemoteServiceManager';
+exports.RemoteModule = RemoteServiceManager.create();
+
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -76,7 +83,12 @@ app.on('ready', async () => {
     // }
 
   }
-  RepositoryManager.storageDir = app.getPath('userData');
+  await createConnection({
+    type: "sqlite",
+    database: `${app.getPath('userData')}/data.db`,
+    synchronize: true,
+    entities: [ BookmarkEntity, ConfigEntity ],
+  });
   createWindow()
 })
 
@@ -94,6 +106,3 @@ if (isDevelopment) {
     })
   }
 }
-
-import { RepositoryManager } from '@/repository/RepositoryManager';
-exports.RepositoryManager = RepositoryManager;

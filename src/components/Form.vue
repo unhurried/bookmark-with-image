@@ -20,23 +20,25 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ExampleStrategy } from '@/scraping/strategy/ExampleStrategy';
-import { RepositoryUtil } from '@/repository/RepositoryUtil';
 import { BookmarkEntity } from '@/repository/BookmarkEntity';
+import { BookmarkService } from '@/remote/service/BookmarkService';
 import { ScrapeFacade } from '@/scraping/ScrapingFacade';
 import Config from '@/components/Config.vue';
+import { RemoteServiceFactory } from '@/remote/RemoteServiceFactory';
 
 @Component({
   name: 'Form',
   components: { Config },
 })
 export default class Form extends Vue {
+  private bookmarkService = RemoteServiceFactory.getModule(BookmarkService);
+
   private url: string = '';
+
   private async onSubmit() {
     try {
       const b = await ScrapeFacade.createBookmark(this.url);
-      const repo = await RepositoryUtil.getRepository(BookmarkEntity);
-      if(b) await repo.save(b);
+      await this.bookmarkService.save(b);
       this.$emit('update');
       this.$bvToast.show('toast-success');
       this.url = '';

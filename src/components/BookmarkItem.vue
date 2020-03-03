@@ -23,42 +23,36 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { RepositoryUtil } from '@/repository/RepositoryUtil';
 import { BookmarkEntity } from '@/repository/BookmarkEntity';
-import { ConfigEntity } from '@/repository/ConfigEntity';
-import { BrowserUtil } from '@/util/BrowserUtil';
+import { RemoteServiceFactory } from '@/remote/RemoteServiceFactory';
+import { BookmarkService } from '@/remote/service/BookmarkService';
+import { BrowserService } from '@/remote/service/BrowserService';
 
 @Component({
   name: 'BookmarkItem',
   components: {},
 })
 export default class BookmarkItem extends Vue {
+  private bookmarkService = RemoteServiceFactory.getModule(BookmarkService);
+  private browserService = RemoteServiceFactory.getModule(BrowserService);
+
   @Prop() private item!: BookmarkEntity;
+
   private async openItem() {
-    BrowserUtil.openUrl(this.item.url);
+    this.browserService.openUrl(this.item.url);
   }
 
   private async deleteItem() {
-    const repository = await RepositoryUtil.getRepository(BookmarkEntity);
-    repository.delete(this.item.url);
+    await this.bookmarkService.delete(this.item);
     this.$emit("update");
   }
 
   private async moveLeft() {
-    this.move('left');
+    await this.bookmarkService.move(this.item, 'left');
+    this.$emit("update");
   }
   private async moveRight() {
-    this.move('right');
-  }
-  private async move(direction: 'left' | 'right') {
-    const dstOrder = direction === 'left'? this.item.order - 1 : this.item.order + 1;
-    const repository = await RepositoryUtil.getRepository(BookmarkEntity);
-    const src = await repository.findOne(this.item.url);
-    const dst = await repository.findOne({ order: dstOrder });
-    if (!src || !dst) { return; }
-    src.order = dst.order;
-    dst.order = this.item.order;
-    await Promise.all([ repository.save(src), repository.save(dst) ]);
+    await this.bookmarkService.move(this.item, 'right');
     this.$emit("update");
   }
 }

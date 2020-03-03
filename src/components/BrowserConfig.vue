@@ -30,25 +30,25 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { ExampleStrategy } from '@/scraping/strategy/ExampleStrategy';
-import { RepositoryUtil } from '@/repository/RepositoryUtil';
-import { ConfigEntity } from '@/repository/ConfigEntity';
-import { ScrapeFacade } from '@/scraping/ScrapingFacade'
 import electron from 'electron';
-import { RepositoryManager } from '../repository/RepositoryManager';
 const dialog = electron.remote.dialog;
+import { ScrapeFacade } from '@/scraping/ScrapingFacade'
+import { RemoteServiceFactory } from '@/remote/RemoteServiceFactory';
+import { ConfigService } from '@/remote/service/ConfigService';
+import { ConfigEntity } from '@/repository/ConfigEntity';
 
 @Component({
   name: 'BrowserConfig',
   components: {},
 })
 export default class BrowserConfig extends Vue {
+  private configService = RemoteServiceFactory.getModule(ConfigService);
+
   private browserPath: string = '';
   private browserOption: string = '';
 
   private async mounted() {
-    const repository = await RepositoryUtil.getRepository(ConfigEntity);
-    const entity = await repository.findOne('config');
+    const entity = await this.configService.findOne();
     if (entity) {
       this.browserPath = entity.browserPath? entity.browserPath : '';
       this.browserOption = entity.browserOption? entity.browserOption : '';
@@ -69,11 +69,10 @@ export default class BrowserConfig extends Vue {
   }
 
   private async update() {
-    const repository = await RepositoryUtil.getRepository(ConfigEntity);
     const entity = new ConfigEntity();
     entity.browserPath = this.browserPath;
     entity.browserOption = this.browserOption;
-    repository.save(entity);
+    await this.configService.save(entity);
   }
 }
 </script>

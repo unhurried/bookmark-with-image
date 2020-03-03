@@ -1,9 +1,7 @@
-import { Column, Index, PrimaryColumn } from 'typeorm';
-import { ExtendedEntity } from '@/repository/ExtendedEntity';
-import { BaseEntity } from './BaseEntity';
+import { Column, Index, PrimaryColumn, Entity } from 'typeorm';
 
-@ExtendedEntity('bookmark')
-export class BookmarkEntity extends BaseEntity {
+@Entity('bookmark')
+export class BookmarkEntity {
   @PrimaryColumn({ type: 'text', name: 'url' })
   url!: string;
 

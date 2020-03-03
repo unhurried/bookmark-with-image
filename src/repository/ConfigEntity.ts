@@ -1,9 +1,7 @@
-import { Column, PrimaryColumn } from 'typeorm';
-import { ExtendedEntity } from '@/repository/ExtendedEntity';
-import { BaseEntity } from './BaseEntity';
+import { Column, PrimaryColumn, Entity } from 'typeorm';
 
-@ExtendedEntity('config')
-export class ConfigEntity extends BaseEntity {
+@Entity('config')
+export class ConfigEntity {
   @PrimaryColumn({ type: 'text', name: 'id' })
   id = 'config';
 
